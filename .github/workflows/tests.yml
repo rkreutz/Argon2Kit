@@ -13,10 +13,9 @@ jobs:
         os: [ubuntu-18.04, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-    - name: Install Swift
-      uses: slashmo/install-swift@v0.1.0
+    - uses: swift-actions/setup-swift@v1
       with:
-        version: 5.5
+        swift-version: "5.5"
     - name: Checkout
       uses: actions/checkout@v2
     - name: Run Tests
