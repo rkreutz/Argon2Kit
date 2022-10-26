@@ -6,19 +6,14 @@ import PackageDescription
 let package = Package(
     name: "Argon2Kit",
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "Argon2Kit",
             targets: ["Argon2Kit"]),
     ],
     dependencies: [
-        // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
-        .package(path: "./argon2")
+        .package(name: "argon2", url: "https://github.com/P-H-C/phc-winner-argon2", revision: "f57e61e19229e23c4445b85494dbf7c07de721cb")
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "Argon2Kit",
             dependencies: ["argon2"]),
