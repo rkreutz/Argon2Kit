@@ -4,8 +4,7 @@
 [![Swift Package Manager](https://img.shields.io/badge/spm-compatible-brightgreen.svg?style=flat)](https://swift.org/package-manager)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![GitHub tag](https://img.shields.io/github/tag/rkreutz/Argon2Kit.svg)](https://GitHub.com/rkreutz/Argon2Kit/tags/)
-![MacOS](https://github.com/rkreutz/Argon2Kit/workflows/MacOS/badge.svg?branch=master&event=push)
-![Linux](https://github.com/rkreutz/Argon2Kit/workflows/Linux/badge.svg?branch=master&event=push)
+![Run Tests](https://github.com/rkreutz/Argon2Kit/workflows/Run%20Tests/badge.svg?branch=main&event=push)
 
 Swift wrapper for the C implementation of [Argon2](https://github.com/P-H-C/phc-winner-argon2), the winner of the [Password Hash Competition](https://www.password-hashing.net).
 
@@ -14,7 +13,7 @@ Swift wrapper for the C implementation of [Argon2](https://github.com/P-H-C/phc-
 Argon2Swift can be installed via SPM (Swift Package Manger) by adding the following to your depencencies:
 
 ```swift
-.package(url: "https://github.com/rkreutz/Argon2Kit.git", .branch("main"))
+.package(url: "https://github.com/rkreutz/Argon2Kit.git", .upToNextMajor(from: "0.1.0"))
 ```
 
 # Usage
