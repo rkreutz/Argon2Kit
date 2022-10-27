@@ -7,8 +7,8 @@ public enum Argon2 {
     ///   - password: the password string to be hashed
     ///   - salt: the salt to be used, a minimum of 8 bytes should be provided. (defaults to 8 random bytes)
     ///   - iterations: the number of iterations (defaults to 3)
-    ///   - memory: the memory cost to be used, denominated by 2^M kB (defaults to 12)
-    ///   - parallelism: the number of parallel threads to use (defaults to 1)
+    ///   - memory: the memory cost to be used, denominated in kB (defaults to 4,096)
+    ///   - threads: the number of parallel threads to use (defaults to 1)
     ///   - length: the number of bytes of the resulting hash (defaults to 32)
     ///   - type: the Argon2 type to be used (defaults to `i`)
     ///   - version: the Argon2 version to be used (defaults to `latest`)
@@ -17,13 +17,13 @@ public enum Argon2 {
         password: String,
         salt: Data = .random(bytes: 8),
         iterations: UInt32 = 3,
-        memory: UInt32 = 12,
-        parallelism: UInt32 = 1,
+        memory: UInt32 = 4_096,
+        threads: UInt32 = 1,
         length: UInt32 = 32,
         type: `Type` = .i,
         version: Version = .latest
     ) throws -> Digest {
-        try hash(password: Data(password.utf8), salt: salt, iterations: iterations, memory: memory, parallelism: parallelism, length: length, type: type, version: version)
+        try hash(password: Data(password.utf8), salt: salt, iterations: iterations, memory: memory, threads: threads, length: length, type: type, version: version)
     }
 
     /// Hashes a given password with Argon2.
@@ -31,8 +31,8 @@ public enum Argon2 {
     ///   - password: the password data to be hashed
     ///   - salt: the salt to be used, a minimum of 8 bytes should be provided. (defaults to 8 random bytes)
     ///   - iterations: the number of iterations (defaults to 3)
-    ///   - memory: the memory cost to be used, denominated by 2^M kB (defaults to 12)
-    ///   - parallelism: the number of parallel threads to use (defaults to 1)
+    ///   - memory: the memory cost to be used, denominated in kB (defaults to 4,096)
+    ///   - threads: the number of parallel threads to use (defaults to 1)
     ///   - length: the number of bytes of the resulting hash (defaults to 32)
     ///   - type: the Argon2 type to be used (defaults to `i`)
     ///   - version: the Argon2 version to be used (defaults to `latest`)
@@ -41,13 +41,13 @@ public enum Argon2 {
         password: Data,
         salt: Data = .random(bytes: 8),
         iterations: UInt32 = 3,
-        memory: UInt32 = 12,
-        parallelism: UInt32 = 1,
+        memory: UInt32 = 4_096,
+        threads: UInt32 = 1,
         length: UInt32 = 32,
         type: `Type` = .i,
         version: Version = .latest
     ) throws -> Digest {
-        let encodedLen = argon2_encodedlen(iterations, memory, parallelism, UInt32(salt.count), length, type.argon2type)
+        let encodedLen = argon2_encodedlen(iterations, memory, threads, UInt32(salt.count), length, type.argon2type)
 
         let hash = UnsafeMutablePointer<Int8>.allocate(capacity: Int(length))
         let encoded = UnsafeMutablePointer<Int8>.allocate(capacity: Int(encodedLen))
@@ -59,13 +59,13 @@ public enum Argon2 {
             encoded.deallocate()
         }
 
-        let rawErrorCode = argon2_hash(iterations, memory, parallelism, [UInt8](password), password.count, [UInt8](salt), salt.count, hash, Int(length), encoded, encodedLen, type.argon2type, version.rawValue)
+        let rawErrorCode = argon2_hash(iterations, memory, threads, [UInt8](password), password.count, [UInt8](salt), salt.count, hash, Int(length), encoded, encodedLen, type.argon2type, version.rawValue)
         let errorCode = ErrorCode(rawValue: rawErrorCode)
 
         guard errorCode == .ok else { throw errorCode }
 
-        let hashData = Data(UnsafeBufferPointer(start: hash, count: Int(length)).map { UInt8(bitPattern: $0) })
-        let encodedData = Data(UnsafeBufferPointer(start: encoded, count: encodedLen).map { UInt8(bitPattern: $0) })
+        let hashData = Data(bytes: hash, count: Int(length))
+        let encodedData = Data(bytes: encoded, count: encodedLen)
 
         return Digest(hash: hashData, encoded: encodedData)
     }
