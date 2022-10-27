@@ -18,5 +18,7 @@ jobs:
         swift-version: "5.5"
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: Run Tests
       run: swift test
