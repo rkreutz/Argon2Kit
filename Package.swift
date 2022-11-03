@@ -49,5 +49,8 @@ let package = Package(
         .testTarget(
             name: "Argon2KitTests",
             dependencies: ["Argon2Kit"]),
+        .testTarget(
+            name: "argon2Tests",
+            dependencies: ["argon2"])
     ]
 )

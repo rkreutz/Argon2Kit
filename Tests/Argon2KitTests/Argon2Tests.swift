@@ -59,6 +59,44 @@ final class Argon2Tests: XCTestCase {
         XCTAssertFalse(try Argon2.verify(password: password, encodedHash: invalidEncoded, type: .id))
     }
 
+    func testPerformance() {
+        let password = "Password123"
+        let salt = Data([UInt8](repeating: 5, count: 16))
+
+        measure {
+            let digest = try? Argon2.hash(
+                password: password,
+                salt: salt,
+                iterations: 3,
+                memory: 16_384,
+                threads: 1,
+                length: 32,
+                type: .i,
+                version: .latest
+            )
+            XCTAssertEqual(digest?.rawData.count, 32)
+        }
+    }
+
+    func testPerformanceSmallerKey() {
+        let password = "Password123"
+        let salt = Data([UInt8](repeating: 5, count: 16))
+
+        measure {
+            let digest = try? Argon2.hash(
+                password: password,
+                salt: salt,
+                iterations: 3,
+                memory: 16_384,
+                threads: 1,
+                length: 24,
+                type: .i,
+                version: .latest
+            )
+            XCTAssertEqual(digest?.rawData.count, 24)
+        }
+    }
+
     func testPerformanceLongKey() {
         let password = "Password123"
         let salt = Data([UInt8](repeating: 5, count: 16))
